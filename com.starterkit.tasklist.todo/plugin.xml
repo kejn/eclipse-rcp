@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="Sample Category"
+            id="com.starterkit.tasklist.todo">
+      </category>
+      <view
+            name="Todo View"
+            icon="icons/sample.gif"
+            category="com.starterkit.tasklist.todo"
+            class="com.starterkit.tasklist.todo.views.TodoView"
+            id="com.starterkit.tasklist.todo.views.TodoView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="com.starterkit.tasklist.todo.PerspectiveFactory"
+            id="com.starterkit.tasklist.todo.perspective"
+            name="TODO">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="com.starterkit.tasklist.todo.perspective">
+         <view
+               id="com.starterkit.tasklist.todo.views.TodoView"
+               minimized="false"
+               ratio="0.3"
+               relationship="left"
+               relative="org.eclipse.ui.views.ProblemView">
+         </view>
+      </perspectiveExtension>
+   </extension>
+
+</plugin>
