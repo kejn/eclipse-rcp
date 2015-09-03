@@ -23,5 +23,32 @@
          </property>
       </product>
    </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="com.starterkit.tasklist.commands.ExitHandler"
+            id="com.starterkit.tasklist.command.exit"
+            name="Exit">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <menu
+               id="com.starterkit.tasklist.menu.file"
+               label="File"
+               mnemonic="F">
+            <command
+                  commandId="com.starterkit.tasklist.command.exit"
+                  label="Exit"
+                  mnemonic="E"
+                  style="push"
+                  tooltip="Exit the application">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
 
 </plugin>

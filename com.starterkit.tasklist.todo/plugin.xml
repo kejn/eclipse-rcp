@@ -5,35 +5,56 @@
    <extension
          point="org.eclipse.ui.views">
       <category
-            name="Sample Category"
+            name="TODO Category"
             id="com.starterkit.tasklist.todo">
       </category>
       <view
-            name="Todo View"
+            name="Task List"
             icon="icons/sample.gif"
             category="com.starterkit.tasklist.todo"
-            class="com.starterkit.tasklist.todo.views.TodoView"
-            id="com.starterkit.tasklist.todo.views.TodoView">
+            class="com.starterkit.tasklist.todo.views.TaskList"
+            id="com.starterkit.tasklist.todo.views.TaskList">
+      </view>
+      <view
+            category="com.starterkit.tasklist.todo"
+            class="com.starterkit.tasklist.todo.views.TodoList"
+            icon="icons/sample.gif"
+            id="com.starterkit.tasklist.todo.views.TodoList"
+            name="TODO List"
+            restorable="true">
       </view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            class="com.starterkit.tasklist.todo.PerspectiveFactory"
-            id="com.starterkit.tasklist.todo.perspective"
+            class="com.starterkit.tasklist.todo.perspective.PerspectiveTaskListFactory"
+            id="com.starterkit.tasklist.todo.perspective.tasklist"
             name="TODO">
       </perspective>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
-            targetID="com.starterkit.tasklist.todo.perspective">
+            targetID="com.starterkit.tasklist.todo.perspective.tasklist">
          <view
-               id="com.starterkit.tasklist.todo.views.TodoView"
+               closeable="false"
+               id="com.starterkit.tasklist.todo.views.TaskList"
+               minimized="false"
+               ratio="0.9"
+               relationship="top"
+               relative="org.eclipse.ui.editorss"
+               showTitle="true"
+               visible="true">
+         </view>
+         <view
+               closeable="false"
+               id="com.starterkit.tasklist.todo.views.TodoList"
                minimized="false"
                ratio="0.3"
-               relationship="left"
-               relative="org.eclipse.ui.views.ProblemView">
+               relationship="right"
+               relative="com.starterkit.tasklist.todo.views.TaskList"
+               showTitle="true"
+               visible="true">
          </view>
       </perspectiveExtension>
    </extension>

@@ -1,6 +1,8 @@
 package com.starterkit.tasklist;
 
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
@@ -18,7 +20,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
     
     public void preWindowOpen() {
         IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
-        configurer.setInitialSize(new Point(1024, 768));
+        configurer.setInitialSize(new Point(800, 600));
         configurer.setShowCoolBar(true);
         configurer.setShowStatusLine(true);
         configurer.setShowPerspectiveBar(true);
