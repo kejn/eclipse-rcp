@@ -13,57 +13,36 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
-import com.starterkit.tasklist.todo.dialogs.NewTaskDialog;
 import com.starterkit.tasklist.todo.filters.TaskFilter;
 import com.starterkit.tasklist.todo.model.Status;
 import com.starterkit.tasklist.todo.model.Task;
 import com.starterkit.tasklist.todo.model.ViewContentTasksProvider;
 
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.TableColumn;
-
-/**
- * This sample class demonstrates how to plug-in a new workbench view. The view
- * shows data obtained from the model. The sample creates a dummy model on the
- * fly, but a real implementation would connect to the model available either in
- * this or another plug-in (e.g. the workspace). The view is connected to the
- * model using a content provider.
- * <p>
- * The view uses a label provider to define how model objects should be
- * presented in the view. Each view can present the same model objects using
- * different labels and icons, if needed. Alternatively, a single label provider
- * can be shared between views in order to ensure that objects of the same type
- * are presented in the same way everywhere.
- * <p>
- */
-
-public class TaskList extends ViewPart {
+public class ArchiveTaskList extends ViewPart {
 
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
-	public static final String ID = "com.starterkit.tasklist.todo.views.TaskList";
-
+	public static final String ID = "com.starterkit.tasklist.todo.views.ArchiveTaskList";
+	
 	private TableViewer tableViewer;
-	private Action actionNewTask;
-	private Action actionEditTask;
-	private Action actionArchiveTask;
 	private Action actionDeleteTask;
+	private Action actionTodoTask;
 	private Action doubleClickAction;
 
 	class ViewLabelProvider extends LabelProvider implements
@@ -106,7 +85,7 @@ public class TaskList extends ViewPart {
 	/**
 	 * The constructor.
 	 */
-	public TaskList() {
+	public ArchiveTaskList() {
 	}
 
 	/**
@@ -120,7 +99,7 @@ public class TaskList extends ViewPart {
 		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		tableViewer.setContentProvider(ViewContentTasksProvider
 				.INSTANCE(tableViewer));
-		tableViewer.setFilters(new TaskFilter[]{new TaskFilter(Status.TODO)});
+		tableViewer.setFilters(new TaskFilter[]{new TaskFilter(Status.DONE)});
 		
 		TableColumn tblclmnId = new TableColumn(table, SWT.NONE);
 		tblclmnId.setWidth(35);
@@ -163,7 +142,7 @@ public class TaskList extends ViewPart {
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
-				TaskList.this.fillContextMenu(manager);
+				ArchiveTaskList.this.fillContextMenu(manager);
 			}
 		});
 		Menu menu = menuMgr.createContextMenu(tableViewer.getControl());
@@ -178,45 +157,25 @@ public class TaskList extends ViewPart {
 	}
 
 	private void fillLocalPullDown(IMenuManager manager) {
-		manager.add(actionNewTask);
-		manager.add(new Separator());
-		manager.add(actionEditTask);
-		manager.add(new Separator());
-		manager.add(actionArchiveTask);
+		manager.add(actionTodoTask);
 		manager.add(new Separator());
 		manager.add(actionDeleteTask);
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
-		manager.add(actionNewTask);
-		manager.add(actionEditTask);
-		manager.add(actionArchiveTask);
+		manager.add(actionTodoTask);
 		manager.add(actionDeleteTask);
 		// Other plug-ins can contribute there actions here
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 
 	private void fillLocalToolBar(IToolBarManager manager) {
-		manager.add(actionNewTask);
-		manager.add(actionEditTask);
-		manager.add(actionArchiveTask);
+		manager.add(actionTodoTask);
 		manager.add(actionDeleteTask);
 	}
 
 	private void makeActions() {
-		actionNewTask = new Action() {
-			public void run() {
-				newTaskDialog();
-			}
-		};
-		actionNewTask.setId("actionNewTask");
-		actionNewTask.setText("New task");
-		actionNewTask.setToolTipText("Create new task with list of TODOs");
-		actionNewTask.setImageDescriptor(PlatformUI.getWorkbench()
-				.getSharedImages()
-				.getImageDescriptor(ISharedImages.IMG_OBJ_ADD));
-
-		actionEditTask = new Action() {
+		actionTodoTask = new Action() {
 			public void run() {
 				if (tableViewer.getSelection().isEmpty()) {
 					showMessage("No items selected");
@@ -225,37 +184,17 @@ public class TaskList extends ViewPart {
 				IStructuredSelection selection = (IStructuredSelection) tableViewer
 						.getSelection();
 				Task task = (Task) selection.getFirstElement();
-				editTaskDialog(task);
-			}
-		};
-		actionEditTask.setId("actionEditTask");
-		actionEditTask.setText("Edit task");
-		actionEditTask.setToolTipText("Edit selected task");
-		actionEditTask.setImageDescriptor(PlatformUI.getWorkbench()
-				.getSharedImages()
-				.getImageDescriptor(ISharedImages.IMG_ETOOL_CLEAR));
-
-		actionArchiveTask = new Action() {
-			public void run() {
-				if (tableViewer.getSelection().isEmpty()) {
-					showMessage("No items selected");
-					return;
-				}
-				IStructuredSelection selection = (IStructuredSelection) tableViewer
-						.getSelection();
-				Task task = (Task) selection.getFirstElement();
-				task.setStatus(Status.DONE);
+				task.setStatus(Status.TODO);
 				ViewContentTasksProvider.INSTANCE(null).refreshParentViews();
-				
 			}
 		};
-		actionArchiveTask.setId("actionArchiveTask");
-		actionArchiveTask.setText("Mark task as DONE");
-		actionArchiveTask.setToolTipText("Task DONE action executed");
-		actionArchiveTask.setImageDescriptor(PlatformUI.getWorkbench()
+		actionTodoTask.setId("actionTodoTask");
+		actionTodoTask.setText("Mark task as TODO");
+		actionTodoTask.setToolTipText("Task TODO action executed");
+		actionTodoTask.setImageDescriptor(PlatformUI.getWorkbench()
 				.getSharedImages()
-				.getImageDescriptor(ISharedImages.IMG_TOOL_FORWARD));
-		
+				.getImageDescriptor(ISharedImages.IMG_TOOL_UNDO));
+
 		actionDeleteTask = new Action() {
 			public void run() {
 				if (tableViewer.getSelection().isEmpty()) {
@@ -304,23 +243,6 @@ public class TaskList extends ViewPart {
 	private void showMessage(String message) {
 		MessageDialog.openInformation(tableViewer.getControl().getShell(),
 				"Task list", message);
-	}
-
-	private void newTaskDialog() {
-		NewTaskDialog dialog = new NewTaskDialog(tableViewer.getControl().getShell());
-		dialog.open();
-		Task task = dialog.getTask();
-		if(task != null) {
-			((ViewContentTasksProvider) tableViewer.getContentProvider())
-					.addElement(task);
-		}
-
-	}
-
-	private void editTaskDialog(Task taskEdit) {
-		NewTaskDialog dialog = new NewTaskDialog(tableViewer.getControl().getShell(), taskEdit);
-		dialog.open();
-		ViewContentTasksProvider.INSTANCE(null).refreshParentViews();
 	}
 
 	/**

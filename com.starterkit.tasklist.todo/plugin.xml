@@ -17,11 +17,10 @@
       </view>
       <view
             category="com.starterkit.tasklist.todo"
-            class="com.starterkit.tasklist.todo.views.TodoList"
+            class="com.starterkit.tasklist.todo.views.ArchiveTaskList"
             icon="icons/sample.gif"
-            id="com.starterkit.tasklist.todo.views.TodoList"
-            name="TODO List"
-            restorable="true">
+            id="com.starterkit.tasklist.todo.views.ArchiveTaskList"
+            name="Archive task list">
       </view>
    </extension>
    <extension
@@ -30,6 +29,11 @@
             class="com.starterkit.tasklist.todo.perspective.PerspectiveTaskListFactory"
             id="com.starterkit.tasklist.todo.perspective.tasklist"
             name="TODO">
+      </perspective>
+      <perspective
+            class="com.starterkit.tasklist.todo.perspective.PerspectiveArchiveFactory"
+            id="com.starterkit.tasklist.todo.perspective.archive"
+            name="Archive">
       </perspective>
    </extension>
    <extension
@@ -40,19 +44,22 @@
                closeable="false"
                id="com.starterkit.tasklist.todo.views.TaskList"
                minimized="false"
-               ratio="0.9"
-               relationship="top"
+               ratio="1"
+               relationship="left"
                relative="org.eclipse.ui.editorss"
                showTitle="true"
                visible="true">
          </view>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="com.starterkit.tasklist.todo.perspective.archive">
          <view
                closeable="false"
-               id="com.starterkit.tasklist.todo.views.TodoList"
+               id="com.starterkit.tasklist.todo.views.ArchiveTaskList"
                minimized="false"
-               ratio="0.3"
-               relationship="right"
-               relative="com.starterkit.tasklist.todo.views.TaskList"
+               ratio="1"
+               relationship="left"
+               relative="org.eclipse.ui.editorss"
                showTitle="true"
                visible="true">
          </view>
